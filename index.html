@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishi Mitra - Smart Farming Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" data-translate="login">Login</h2>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button id="loginTab" class="tab-btn active" data-translate="login">Login</button>
+                    <button id="registerTab" class="tab-btn" data-translate="register">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label data-translate="email">Email</label>
+                        <input type="email" id="loginEmail" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="password">Password</label>
+                        <input type="password" id="loginPassword" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn-primary full-width" data-translate="login">Login</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label data-translate="full_name">Full Name</label>
+                        <input type="text" id="registerName" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="email">Email</label>
+                        <input type="email" id="registerEmail" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="phone">Phone Number</label>
+                        <input type="tel" id="registerPhone" required placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="password">Password</label>
+                        <input type="password" id="registerPassword" required placeholder="Create a password">
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirmPassword" required placeholder="Confirm your password">
+                    </div>
+                    <button type="submit" class="btn-primary full-width" data-translate="register">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <i class="fas fa-seedling"></i>
+                    <span data-translate="app_name">Krishi Mitra</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#dashboard" class="nav-link active" data-translate="nav_dashboard">Dashboard</a>
+                    <a href="#farm" class="nav-link" data-translate="nav_farm">My Farm</a>
+                    <a href="#insights" class="nav-link" data-translate="nav_insights">Insights</a>
+                    <a href="#market" class="nav-link" data-translate="nav_market">Market</a>
+                </div>
+                <div class="header-controls">
+                    <select id="languageSelect" class="language-selector">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="mr">मराठी</option>
+                        <option value="ta">தமிழ்</option>
+                        <option value="te">తెలుగు</option>
+                    </select>
+                    <button id="locationBtn" class="location-btn">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span data-translate="get_location">Get Location</span>
+                    </button>
+
+                    <!-- User Authentication Controls -->
+                    <div id="authControls" class="auth-controls">
+                        <button id="loginBtn" class="btn-auth" data-translate="login">Login</button>
+                        <div id="userProfile" class="user-profile hidden">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-info">
+                                <span id="userName">User</span>
+                                <div class="user-dropdown">
+                                    <a href="#profile" data-translate="profile">Profile</a>
+                                    <a href="#settings" data-translate="settings">Settings</a>
+                                    <a href="#logout" id="logoutBtn" data-translate="logout">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <div class="container">
+                <h1 class="section-title" data-translate="dashboard_title">Farm Dashboard</h1>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon weather-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="currentTemp">--°C</h3>
+                            <p data-translate="temperature">Temperature</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon humidity-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="humidity">--%</h3>
+                            <p data-translate="humidity">Humidity</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon productivity-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="productivity">+12%</h3>
+                            <p data-translate="productivity">Productivity</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon soil-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="soilMoisture">--%</h3>
+                            <p data-translate="soil_moisture">Soil Moisture</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather and Irrigation Chart -->
+                <div class="chart-section">
+                    <div class="card">
+                        <h2 data-translate="weather_irrigation">Weather & Irrigation Planning</h2>
+                        <canvas id="weatherChart" height="100"></canvas>
+                    </div>
+                </div>
+
+                <!-- AI Recommendations -->
+                <div class="recommendations">
+                    <h2 data-translate="ai_recommendations">AI-Powered Recommendations</h2>
+                    <div class="recommendation-cards" id="recommendationCards">
+                        <!-- Recommendations will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Farm Management Section -->
+        <section id="farm" class="content-section">
+            <div class="container">
+                <h2 class="section-title" data-translate="farm_management">Farm Management</h2>
+
+                <div class="farm-grid">
+                    <!-- Farm Profile -->
+                    <div class="card farm-profile-card">
+                        <h3 data-translate="farm_profile">Farm Profile</h3>
+                        <form id="farmForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label data-translate="crop_type">Crop Type</label>
+                                    <select id="cropType">
+                                        <option value="rice" data-translate="crop_rice">Rice</option>
+                                        <option value="wheat" data-translate="crop_wheat">Wheat</option>
+                                        <option value="maize" data-translate="crop_maize">Maize</option>
+                                        <option value="cotton" data-translate="crop_cotton">Cotton</option>
+                                        <option value="tomato" data-translate="crop_tomato">Tomato</option>
+                                        <option value="potato" data-translate="crop_potato">Potato</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label data-translate="farm_area">Farm Area</label>
+                                    <input type="number" id="farmArea" step="0.1" min="0.1" placeholder="Enter area">
+                                </div>
+                                <div class="form-group">
+                                    <label data-translate="area_unit">Unit</label>
+                                    <select id="areaUnit">
+                                        <option value="acres" data-translate="acres">Acres</option>
+                                        <option value="hectares" data-translate="hectares">Hectares</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label data-translate="soil_type">Soil Type</label>
+                                    <select id="soilType">
+                                        <option value="loamy" data-translate="soil_loamy">Loamy</option>
+                                        <option value="clay" data-translate="soil_clay">Clay</option>
+                                        <option value="sandy" data-translate="soil_sandy">Sandy</option>
+                                        <option value="silt" data-translate="soil_silt">Silt</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label data-translate="planting_date">Planting Date</label>
+                                    <input type="date" id="plantingDate">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group location-group">
+                                    <label data-translate="location_coords">Location Coordinates</label>
+                                    <div class="location-inputs">
+                                        <input type="number" id="latitude" placeholder="Latitude" step="0.000001">
+                                        <input type="number" id="longitude" placeholder="Longitude" step="0.000001">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary" data-translate="save_profile">Save
+                                    Profile</button>
+                                <button type="button" id="fetchDataBtn" class="btn-secondary"
+                                    data-translate="fetch_data">Fetch Weather Data</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Yield Calculator -->
+                    <div class="card yield-card">
+                        <h3 data-translate="yield_calculator">Yield Calculator</h3>
+                        <div id="yieldResults" class="yield-results">
+                            <div class="yield-item">
+                                <span data-translate="expected_yield">Expected Yield:</span>
+                                <strong id="expectedYield">-- tons</strong>
+                            </div>
+                            <div class="yield-item">
+                                <span data-translate="estimated_revenue">Estimated Revenue:</span>
+                                <strong id="estimatedRevenue">₹ --</strong>
+                            </div>
+                            <div class="yield-item">
+                                <span data-translate="productivity_gain">Productivity Gain:</span>
+                                <strong id="productivityGain" class="positive">+12%</strong>
+                            </div>
+                        </div>
+                        <button id="calculateYieldBtn" class="btn-primary" data-translate="calculate_yield">Calculate
+                            Yield</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Section -->
+        <section id="insights" class="content-section">
+            <div class="container">
+                <h2 class="section-title" data-translate="detailed_insights">Detailed Insights</h2>
+
+                <div class="insights-grid">
+                    <div class="card">
+                        <h3 data-translate="irrigation_schedule">Irrigation Schedule</h3>
+                        <div id="irrigationPlan"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3 data-translate="fertilizer_recommendations">Fertilizer Recommendations</h3>
+                        <div id="fertilizerPlan"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3 data-translate="pest_disease_alerts">Pest & Disease Alerts</h3>
+                        <div id="pestAlerts"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3 data-translate="market_trends">Market Price Trends</h3>
+                        <div id="marketTrends"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Market Section -->
+        <section id="market" class="content-section">
+            <div class="container">
+                <h2 class="section-title" data-translate="market_prices">Market Prices</h2>
+
+                <div class="market-controls">
+                    <input type="text" id="searchCrop" placeholder="Search crops..."
+                        data-translate-placeholder="search_crops">
+                    <select id="marketLocation">
+                        <option value="all" data-translate="all_markets">All Markets</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="mumbai">Mumbai</option>
+                        <option value="bangalore">Bangalore</option>
+                        <option value="hyderabad">Hyderabad</option>
+                    </select>
+                </div>
+
+                <div class="market-table-container">
+                    <table class="market-table">
+                        <thead>
+                            <tr>
+                                <th data-translate="crop_name">Crop</th>
+                                <th data-translate="current_price">Current Price</th>
+                                <th data-translate="price_change">Change</th>
+                                <th data-translate="market_location">Market</th>
+                                <th data-translate="last_updated">Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marketTableBody">
+                            <!-- Market data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 data-translate="app_name">Krishi Mitra</h3>
+                    <p data-translate="footer_desc">Empowering farmers with AI-driven insights for sustainable and
+                        productive farming.</p>
+                </div>
+                <div class="footer-section">
+                    <h4 data-translate="contact_support">Contact & Support</h4>
+                    <p><i class="fas fa-phone"></i> +91-1800-XXX-XXXX</p>
+                    <p><i class="fas fa-envelope"></i> support@krishimitra.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 <span data-translate="app_name">Krishi Mitra</span>. <span
+                        data-translate="all_rights_reserved">All rights reserved.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
